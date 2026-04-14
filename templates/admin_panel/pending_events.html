@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Pending Approvals{% endblock %}
+{% block body %}
+<div class="layout">
+  {% include 'includes/admin_sidebar.html' %}
+  <div class="main-content">
+    <div class="topbar"><h1>Pending Approvals</h1><span style="font-size:13px;color:var(--text-muted);">{{ events.count }} event(s) awaiting review</span></div>
+    <div class="page-body">
+      {% if events %}
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        {% for event in events %}
+        <div class="card" style="border-left:4px solid var(--amber);">
+          <div class="flex-between">
+            <div>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;">
+                <span class="badge badge-{{ event.category }}">{{ event.get_category_display }}</span>
+                <span class="badge badge-pending">Pending</span>
+              </div>
+              <h3 style="font-size:16px;font-weight:500;">{{ event.title }}</h3>
+              <p class="text-sm text-muted">by {{ event.organizer.get_full_name|default:event.organizer.username }} • Submitted {{ event.created_at|date:"M d, Y g:i A" }}</p>
+            </div>
+            <a href="/admin-panel/events/{{ event.pk }}/review/" class="btn btn-warning">Review Event →</a>
+          </div>
+          <div class="grid-4" style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);">
+            <div class="text-sm"><div class="text-muted">Date</div><div style="font-weight:500;">{{ event.event_date }}</div></div>
+            <div class="text-sm"><div class="text-muted">Venue</div><div style="font-weight:500;">{{ event.venue|truncatechars:25 }}</div></div>
+            <div class="text-sm"><div class="text-muted">Capacity</div><div style="font-weight:500;">{{ event.max_capacity }}</div></div>
+            <div class="text-sm"><div class="text-muted">Department</div><div style="font-weight:500;">{{ event.department }}</div></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="card text-center" style="padding:3rem;">
+        <p style="font-size:2.5rem;">✅</p>
+        <p style="font-size:16px;font-weight:500;margin:.5rem 0;">All caught up!</p>
+        <p class="text-muted text-sm">No events pending approval.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

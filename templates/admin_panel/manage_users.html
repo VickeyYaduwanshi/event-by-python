@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users{% endblock %}
+{% block body %}
+<div class="layout">
+  {% include 'includes/admin_sidebar.html' %}
+  <div class="main-content">
+    <div class="topbar"><h1>Manage Users</h1></div>
+    <div class="page-body">
+      <div class="card mb-2">
+        <form method="GET" style="display:flex;gap:10px;align-items:flex-end;">
+          <div><label class="text-sm text-muted" style="display:block;margin-bottom:4px;">Role</label>
+            <select name="role" class="form-control" style="width:160px;">
+              <option value="">All Roles</option>
+              <option value="student" {% if role_filter == 'student' %}selected{% endif %}>Students</option>
+              <option value="organizer" {% if role_filter == 'organizer' %}selected{% endif %}>Organizers</option>
+              <option value="admin" {% if role_filter == 'admin' %}selected{% endif %}>Admins</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+          {% if role_filter %}<a href="/admin-panel/users/" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+        </form>
+      </div>
+      <div class="card">
+        {% if messages %}{% for msg in messages %}<div class="alert alert-success">{{ msg }}</div>{% endfor %}{% endif %}
+        {% if profiles %}
+        <table class="table">
+          <thead><tr><th>User</th><th>Role</th><th>Department</th><th>Joined</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+          {% for profile in profiles %}
+          <tr>
+            <td>
+              <div class="flex gap-8">
+                <div class="avatar" style="background:{% if profile.role == 'student' %}var(--teal-light){% elif profile.role == 'organizer' %}var(--purple-light){% else %}var(--amber-light){% endif %};color:{% if profile.role == 'student' %}var(--teal){% elif profile.role == 'organizer' %}var(--purple){% else %}var(--amber){% endif %};font-size:11px;">{{ profile.user.first_name|first|upper }}{{ profile.user.last_name|first|upper }}</div>
+                <div>
+                  <div style="font-size:13px;font-weight:500;">{{ profile.user.get_full_name|default:profile.user.username }}</div>
+                  <div class="text-sm text-muted">{{ profile.user.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge" style="background:{% if profile.role == 'student' %}var(--teal-light){% elif profile.role == 'organizer' %}var(--purple-light){% else %}var(--amber-light){% endif %};color:{% if profile.role == 'student' %}var(--teal-dark){% elif profile.role == 'organizer' %}var(--purple-dark){% else %}var(--amber-dark){% endif %};">{{ profile.get_role_display }}</span></td>
+            <td class="text-sm text-muted">{{ profile.department|default:"—" }}</td>
+            <td class="text-sm text-muted">{{ profile.created_at|date:"M d, Y" }}</td>
+            <td>{% if profile.user.is_active %}<span class="badge badge-active">Active</span>{% else %}<span class="badge badge-rejected">Inactive</span>{% endif %}</td>
+            <td>
+              <form method="POST" action="/admin-panel/users/{{ profile.user.pk }}/toggle/" style="display:inline;">
+                {% csrf_token %}
+                <button class="btn btn-sm {% if profile.user.is_active %}btn-outline{% else %}btn-success{% endif %}">
+                  {% if profile.user.is_active %}Deactivate{% else %}Activate{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted text-sm text-center" style="padding:2rem;">No users found.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

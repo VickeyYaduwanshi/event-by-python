@@ -1,0 +1,22 @@
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <h2>🎯 Organizer</h2>
+    <p>Campus Events Hub</p>
+  </div>
+  <div class="sidebar-user">
+    <div class="avatar" style="background:var(--purple-light);color:var(--purple);">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+    <div>
+      <div class="name">{{ request.user.get_full_name|default:request.user.username }}</div>
+      <div class="role">Organizer</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/organizer/dashboard/" class="{% if request.path == '/organizer/dashboard/' %}active{% endif %}"><span class="icon">📊</span>Dashboard</a>
+    <a href="/organizer/create/" class="{% if request.path == '/organizer/create/' %}active{% endif %}"><span class="icon">➕</span>Create Event</a>
+    <a href="/organizer/announce/" class="{% if request.path == '/organizer/announce/' %}active{% endif %}"><span class="icon">📢</span>Announcements</a>
+    <a href="/organizer/analytics/" class="{% if request.path == '/organizer/analytics/' %}active{% endif %}"><span class="icon">📈</span>Analytics</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/accounts/logout/" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;">Logout</a>
+  </div>
+</div>

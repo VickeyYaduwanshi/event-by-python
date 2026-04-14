@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Register — {{ event.title }}{% endblock %}
+{% block body %}
+<div class="layout">
+  {% include 'includes/student_sidebar.html' %}
+  <div class="main-content">
+    <div class="topbar"><h1>Register for Event</h1><a href="/student/discover/" class="btn btn-outline btn-sm">← Back</a></div>
+    <div class="page-body">
+      <div class="grid-2">
+        <div class="card">
+          <span class="badge badge-{{ event.category }}">{{ event.get_category_display }}</span>
+          <h2 style="font-size:18px;font-weight:500;margin:.75rem 0 .5rem;">{{ event.title }}</h2>
+          <p class="text-muted text-sm">{{ event.description }}</p>
+          <div style="margin-top:1rem;display:flex;flex-direction:column;gap:6px;">
+            <div class="flex gap-8 text-sm"><span>📅</span><span>{{ event.event_date|date:"D, M d Y" }} at {{ event.event_time|time:"g:i A" }}</span></div>
+            <div class="flex gap-8 text-sm"><span>📍</span><span>{{ event.venue }}</span></div>
+            <div class="flex gap-8 text-sm"><span>🎟️</span><span>{{ event.registered_count }} / {{ event.max_capacity }} registered</span></div>
+            <div class="flex gap-8 text-sm"><span>📝</span><span>Deadline: {{ event.registration_deadline|date:"M d, Y" }}</span></div>
+            {% if event.team_event %}<div class="flex gap-8 text-sm"><span>👥</span><span>Team event: {{ event.min_team_size }}–{{ event.max_team_size }} members</span></div>{% endif %}
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Complete Registration</h3>
+          <form method="POST">
+            {% csrf_token %}
+            {% if event.team_event %}
+            <div class="form-group"><label>Team Name *</label><input type="text" name="team_name" class="form-control" required></div>
+            <div class="form-group"><label>Other Team Members (Roll Numbers)</label><textarea name="team_members" class="form-control" placeholder="e.g. 21CS042, 21CS067" rows="2"></textarea></div>
+            {% endif %}
+            <div class="alert alert-info" style="font-size:13px;">
+              ✅ You are registering as: <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+            </div>
+            <button type="submit" class="btn btn-success" style="width:100%;justify-content:center;padding:10px;">Confirm Registration 🎟️</button>
+            <a href="/student/discover/" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px;">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

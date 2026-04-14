@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Analytics{% endblock %}
+{% block body %}
+<div class="layout">
+  {% include 'includes/organizer_sidebar.html' %}
+  <div class="main-content">
+    <div class="topbar"><h1>Event Analytics</h1></div>
+    <div class="page-body">
+      <div class="card">
+        <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Event Performance</h3>
+        {% if events_data %}
+        <table class="table">
+          <thead><tr><th>Event</th><th>Status</th><th>Registered</th><th>Checked In</th><th>Attendance Rate</th></tr></thead>
+          <tbody>
+          {% for item in events_data %}
+          <tr>
+            <td><div style="font-size:13px;font-weight:500;">{{ item.event.title }}</div><div class="text-sm text-muted">{{ item.event.event_date }}</div></td>
+            <td><span class="badge badge-{{ item.event.status }}">{{ item.event.get_status_display }}</span></td>
+            <td>{{ item.reg_count }} / {{ item.event.max_capacity }}</td>
+            <td>{{ item.checked_in }}</td>
+            <td>
+              {% if item.reg_count %}
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="progress-bar" style="width:100px;"><div class="progress-fill" style="width:{% widthratio item.checked_in item.reg_count 100 %}%;background:var(--teal);"></div></div>
+                <span class="text-sm">{% widthratio item.checked_in item.reg_count 100 %}%</span>
+              </div>
+              {% else %}—{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="text-sm text-muted text-center" style="padding:2rem;">No events created yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

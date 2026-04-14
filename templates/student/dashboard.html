@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+{% block body %}
+<div class="layout">
+  {% include 'includes/student_sidebar.html' %}
+  <div class="main-content">
+    <div class="topbar">
+      <h1>My Dashboard</h1>
+      <a href="/student/discover/" class="btn btn-success">🔍 Discover Events</a>
+    </div>
+    <div class="page-body">
+      {% if messages %}{% for msg in messages %}<div class="alert alert-success">{{ msg }}</div>{% endfor %}{% endif %}
+      <div class="grid-3 mb-3">
+        <div class="stat-card"><div class="label">Registered Events</div><div class="value" style="color:var(--purple);">{{ total_events }}</div></div>
+        <div class="stat-card"><div class="label">Certificates Earned</div><div class="value" style="color:var(--teal);">{{ total_certs }}</div></div>
+        <div class="stat-card"><div class="label">Upcoming</div><div class="value" style="color:var(--amber);">{{ upcoming.count }}</div></div>
+      </div>
+
+      {% if announcements %}
+      <div class="card mb-2">
+        <h3 style="font-size:15px;font-weight:500;margin-bottom:.75rem;">📢 Recent Announcements</h3>
+        {% for ann in announcements %}
+        <div style="padding:8px 12px;margin-bottom:6px;border-radius:var(--radius);background:{% if ann.priority == 'urgent' %}var(--red-light){% elif ann.priority == 'info' %}var(--purple-light){% else %}var(--bg){% endif %};border-left:3px solid {% if ann.priority == 'urgent' %}var(--red){% elif ann.priority == 'info' %}var(--purple){% else %}var(--gray){% endif %};">
+          <div class="flex-between"><strong style="font-size:13px;">{{ ann.subject }}</strong><span class="text-sm text-muted">{{ ann.created_at|timesince }} ago</span></div>
+          <div class="text-sm" style="margin-top:2px;">{{ ann.message|truncatechars:100 }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Upcoming Events</h3>
+          {% if upcoming %}
+          {% for reg in upcoming %}
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:0.5px solid var(--border);">
+            <div style="min-width:44px;height:48px;background:var(--purple);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <span style="font-size:9px;color:#CECBF6;text-transform:uppercase;">{{ reg.event.event_date|date:"M" }}</span>
+              <span style="font-size:18px;font-weight:500;color:#EEEDFE;line-height:1.1;">{{ reg.event.event_date|date:"d" }}</span>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:500;">{{ reg.event.title }}</div>
+              <div class="text-sm text-muted">{{ reg.event.event_time|time:"g:i A" }} • {{ reg.event.venue }}</div>
+              {% if reg.team_name %}<div class="text-sm" style="color:var(--purple);">Team: {{ reg.team_name }}</div>{% endif %}
+            </div>
+            <a href="/student/ticket/{{ reg.pk }}/" class="btn btn-outline btn-sm">Ticket</a>
+          </div>
+          {% endfor %}
+          {% else %}
+          <p class="text-sm text-muted text-center" style="padding:1.5rem;">No upcoming events. <a href="/student/discover/">Discover events →</a></p>
+          {% endif %}
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Recent Certificates 🏆</h3>
+          {% if certificates %}
+          {% for cert in certificates|slice:":4" %}
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);">
+            <div style="width:36px;height:36px;border-radius:var(--radius);background:{% if cert.cert_type == 'winner_1' %}var(--amber){% elif cert.cert_type == 'winner_2' %}var(--gray){% elif cert.cert_type == 'winner_3' %}#CD7F32{% else %}var(--purple){% endif %};display:flex;align-items:center;justify-content:center;font-size:16px;">
+              {% if cert.cert_type == 'winner_1' %}🥇{% elif cert.cert_type == 'winner_2' %}🥈{% elif cert.cert_type == 'winner_3' %}🥉{% else %}🎓{% endif %}
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:500;">{{ cert.event.title }}</div>
+              <div class="text-sm text-muted">{{ cert.get_cert_type_display }} • {{ cert.issued_at|date:"M d, Y" }}</div>
+            </div>
+          </div>
+          {% endfor %}
+          <a href="/student/certificates/" class="text-sm" style="display:block;text-align:right;margin-top:.5rem;">View all →</a>
+          {% else %}
+          <p class="text-sm text-muted text-center" style="padding:1.5rem;">No certificates yet. Participate in events!</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}All Events — Admin{% endblock %}
+{% block body %}
+<div class="layout">
+  {% include 'includes/admin_sidebar.html' %}
+  <div class="main-content">
+    <div class="topbar"><h1>All Events</h1></div>
+    <div class="page-body">
+      <div class="card mb-2">
+        <form method="GET" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+          <div><label class="text-sm text-muted" style="display:block;margin-bottom:4px;">Filter by Status</label>
+            <select name="status" class="form-control" style="width:180px;">
+              <option value="">All Statuses</option>
+              <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+              <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+              <option value="correction" {% if status_filter == 'correction' %}selected{% endif %}>Correction</option>
+              <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+              <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+              <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+          {% if status_filter %}<a href="/admin-panel/events/" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+        </form>
+      </div>
+      <div class="card">
+        {% if events %}
+        <table class="table">
+          <thead><tr><th>Event</th><th>Organizer</th><th>Date</th><th>Category</th><th>Status</th><th>Registrations</th><th>Action</th></tr></thead>
+          <tbody>
+          {% for event in events %}
+          <tr>
+            <td><div style="font-size:13px;font-weight:500;">{{ event.title|truncatechars:35 }}</div></td>
+            <td class="text-sm text-muted">{{ event.organizer.get_full_name|default:event.organizer.username }}</td>
+            <td class="text-sm text-muted">{{ event.event_date|date:"M d, Y" }}</td>
+            <td><span class="badge badge-{{ event.category }}">{{ event.get_category_display }}</span></td>
+            <td><span class="badge badge-{{ event.status }}">{{ event.get_status_display }}</span></td>
+            <td class="text-sm">{{ event.registered_count }}/{{ event.max_capacity }}</td>
+            <td><a href="/admin-panel/events/{{ event.pk }}/review/" class="btn btn-outline btn-sm">{% if event.status == 'pending' %}Review{% else %}View{% endif %}</a></td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted text-sm text-center" style="padding:2rem;">No events found.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

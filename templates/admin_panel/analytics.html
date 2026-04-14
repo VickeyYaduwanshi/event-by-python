@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Analytics — Admin{% endblock %}
+{% block body %}
+<div class="layout">
+  {% include 'includes/admin_sidebar.html' %}
+  <div class="main-content">
+    <div class="topbar"><h1>Platform Analytics</h1></div>
+    <div class="page-body">
+      <div class="grid-2 mb-3">
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Events by Category</h3>
+          {% for cat, count in events_by_cat.items %}
+          {% if count > 0 %}
+          <div style="margin-bottom:10px;">
+            <div class="flex-between text-sm mb-1">
+              <span>{{ cat|title }}</span>
+              <span style="font-weight:500;">{{ count }}</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:{% widthratio count 30 100 %}%;background:{% if cat == 'technical' %}var(--purple){% elif cat == 'cultural' %}var(--pink){% elif cat == 'sports' %}var(--amber){% elif cat == 'workshop' %}var(--teal){% else %}var(--gray){% endif %};"></div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Events by Status</h3>
+          {% for status, count in events_by_status.items %}
+          {% if count > 0 %}
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);">
+            <span class="badge badge-{{ status }}">{{ status|title }}</span>
+            <span style="font-size:20px;font-weight:500;">{{ count }}</span>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Top Events by Registrations</h3>
+          {% if top_events %}
+          <table class="table">
+            <thead><tr><th>#</th><th>Event</th><th>Registrations</th></tr></thead>
+            <tbody>
+            {% for item in top_events %}
+            <tr>
+              <td style="font-size:16px;font-weight:500;color:var(--purple);">{{ forloop.counter }}</td>
+              <td>
+                <div style="font-size:13px;font-weight:500;">{{ item.event.title }}</div>
+                <span class="badge badge-{{ item.event.category }}">{{ item.event.get_category_display }}</span>
+              </td>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div class="progress-bar" style="width:80px;"><div class="progress-fill" style="width:{% widthratio item.count item.event.max_capacity 100 %}%;background:var(--teal);"></div></div>
+                  <span class="text-sm">{{ item.count }}</span>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p class="text-sm text-muted text-center" style="padding:2rem;">No event data yet.</p>
+          {% endif %}
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Platform Summary</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;padding:10px;background:var(--purple-light);border-radius:var(--radius);">
+              <span style="font-size:13px;color:var(--purple-dark);">Total Certificates Issued</span>
+              <span style="font-size:18px;font-weight:500;color:var(--purple);">{{ total_certs }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px;background:var(--teal-light);border-radius:var(--radius);">
+              <span style="font-size:13px;color:var(--teal-dark);">Active Events</span>
+              <span style="font-size:18px;font-weight:500;color:var(--teal);">{{ events_by_status.active|default:0 }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px;background:var(--amber-light);border-radius:var(--radius);">
+              <span style="font-size:13px;color:var(--amber-dark);">Pending Review</span>
+              <span style="font-size:18px;font-weight:500;color:var(--amber);">{{ events_by_status.pending|default:0 }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px;background:var(--gray-light);border-radius:var(--radius);">
+              <span style="font-size:13px;color:var(--gray-dark);">Completed Events</span>
+              <span style="font-size:18px;font-weight:500;color:var(--gray);">{{ events_by_status.completed|default:0 }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

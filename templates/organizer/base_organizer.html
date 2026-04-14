@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="topbar">
+  <div class="topbar-brand">📋 Campus Events <span style="font-size:12px;color:#888;font-weight:400;margin-left:8px;">Organizer</span></div>
+  <div class="topbar-user">
+    <span style="font-size:12px;color:#888;">{{ request.user.get_full_name|default:request.user.username }}</span>
+    <div class="avatar av-teal">{{ request.user.username|first|upper }}</div>
+    <a href="/accounts/logout/" class="btn btn-outline btn-sm">Logout</a>
+  </div>
+</div>
+<div class="sidebar-layout">
+  <div class="sidebar">
+    <div style="padding:16px 20px;border-bottom:1px solid #E5E4DF;margin-bottom:10px;">
+      <div style="font-size:12px;color:#888;">Welcome back</div>
+      <div style="font-size:14px;font-weight:600;">{{ request.user.get_full_name|default:request.user.username }}</div>
+    </div>
+    <a href="/organizer/dashboard/" class="sidebar-link {% block nav_dash %}{% endblock %}"><span class="icon">📊</span> Dashboard</a>
+    <a href="/organizer/create/" class="sidebar-link {% block nav_create %}{% endblock %}"><span class="icon">➕</span> Create Event</a>
+    <a href="/organizer/analytics/" class="sidebar-link {% block nav_analytics %}{% endblock %}"><span class="icon">📈</span> Analytics</a>
+    <a href="/organizer/announce/" class="sidebar-link {% block nav_announce %}{% endblock %}"><span class="icon">📢</span> Announcements</a>
+    <div style="border-top:1px solid #E5E4DF;margin:12px 0;"></div>
+    <a href="/accounts/logout/" class="sidebar-link" style="color:#E24B4A;"><span class="icon">🚪</span> Logout</a>
+  </div>
+  <div class="main-content">
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% elif message.tags == 'info' %}info{% else %}success{% endif %} auto-dismiss">{{ message }}</div>
+    {% endfor %}
+    {% block organizer_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

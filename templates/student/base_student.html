@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="topbar">
+  <div class="topbar-brand">🎓 Campus Events <span style="font-size:12px;color:#888;font-weight:400;margin-left:8px;">Student</span></div>
+  <div class="topbar-user">
+    <span style="font-size:12px;color:#888;">{{ request.user.get_full_name|default:request.user.username }}</span>
+    <div class="avatar av-purple">{{ request.user.username|first|upper }}</div>
+    <a href="/accounts/logout/" class="btn btn-outline btn-sm">Logout</a>
+  </div>
+</div>
+<div class="sidebar-layout">
+  <div class="sidebar">
+    <div style="padding:16px 20px;border-bottom:1px solid #E5E4DF;margin-bottom:10px;">
+      <div style="font-size:12px;color:#888;">Hello,</div>
+      <div style="font-size:14px;font-weight:600;">{{ request.user.get_full_name|default:request.user.username }}</div>
+      {% if request.user.profile.roll_number %}<div style="font-size:11px;color:#888;">{{ request.user.profile.roll_number }}</div>{% endif %}
+    </div>
+    <a href="/student/dashboard/" class="sidebar-link {% block nav_home %}{% endblock %}"><span class="icon">🏠</span> Dashboard</a>
+    <a href="/student/discover/" class="sidebar-link {% block nav_discover %}{% endblock %}"><span class="icon">🔍</span> Discover Events</a>
+    <a href="/student/my-events/" class="sidebar-link {% block nav_events %}{% endblock %}"><span class="icon">📅</span> My Events</a>
+    <a href="/student/certificates/" class="sidebar-link {% block nav_certs %}{% endblock %}"><span class="icon">🏆</span> Certificates</a>
+    <div style="border-top:1px solid #E5E4DF;margin:12px 0;"></div>
+    <a href="/accounts/logout/" class="sidebar-link" style="color:#E24B4A;"><span class="icon">🚪</span> Logout</a>
+  </div>
+  <div class="main-content">
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% elif message.tags == 'info' %}info{% else %}success{% endif %} auto-dismiss">{{ message }}</div>
+    {% endfor %}
+    {% block student_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

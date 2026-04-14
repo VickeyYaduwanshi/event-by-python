@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}Review — {{ event.title }}{% endblock %}
+{% block body %}
+<div class="layout">
+  {% include 'includes/admin_sidebar.html' %}
+  <div class="main-content">
+    <div class="topbar">
+      <h1>Review Event</h1>
+      <div class="flex gap-8">
+        <span class="badge badge-{{ event.status }}">{{ event.get_status_display }}</span>
+        <a href="/admin-panel/pending/" class="btn btn-outline btn-sm">← Back</a>
+      </div>
+    </div>
+    <div class="page-body">
+      {% if messages %}{% for msg in messages %}<div class="alert alert-success">{{ msg }}</div>{% endfor %}{% endif %}
+      <div class="grid-2">
+        <div>
+          <div class="card mb-2">
+            <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Event Details</h3>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div><div class="text-sm text-muted">Title</div><div style="font-size:15px;font-weight:500;">{{ event.title }}</div></div>
+              <div class="grid-2">
+                <div><div class="text-sm text-muted">Category</div><span class="badge badge-{{ event.category }}">{{ event.get_category_display }}</span></div>
+                <div><div class="text-sm text-muted">Department</div><div style="font-size:13px;">{{ event.department }}</div></div>
+              </div>
+              <div><div class="text-sm text-muted">Description</div><div style="font-size:13px;background:var(--bg);padding:10px;border-radius:var(--radius);margin-top:4px;">{{ event.description }}</div></div>
+              <div class="grid-2">
+                <div><div class="text-sm text-muted">Date & Time</div><div style="font-size:13px;font-weight:500;">{{ event.event_date|date:"D, M d Y" }} at {{ event.event_time|time:"g:i A" }}</div></div>
+                <div><div class="text-sm text-muted">Venue</div><div style="font-size:13px;">{{ event.venue }}</div></div>
+              </div>
+              <div class="grid-2">
+                <div><div class="text-sm text-muted">Capacity</div><div style="font-size:13px;">{{ event.max_capacity }} seats</div></div>
+                <div><div class="text-sm text-muted">Reg Deadline</div><div style="font-size:13px;">{{ event.registration_deadline|date:"M d, Y" }}</div></div>
+              </div>
+              {% if event.team_event %}
+              <div><div class="text-sm text-muted">Team Size</div><div style="font-size:13px;">{{ event.min_team_size }} – {{ event.max_team_size }} members</div></div>
+              {% endif %}
+              {% if event.tags %}
+              <div><div class="text-sm text-muted">Tags</div>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
+                  {% for tag in event.get_tag_list %}<span style="font-size:11px;background:var(--purple-light);color:var(--purple-dark);padding:2px 8px;border-radius:20px;">{{ tag }}</span>{% endfor %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="font-size:15px;font-weight:500;margin-bottom:.75rem;">Organizer Info</h3>
+            <div class="flex gap-12">
+              <div class="avatar" style="background:var(--purple-light);color:var(--purple);width:44px;height:44px;font-size:16px;">{{ event.organizer.first_name|first|upper }}{{ event.organizer.last_name|first|upper }}</div>
+              <div>
+                <div style="font-size:14px;font-weight:500;">{{ event.organizer.get_full_name|default:event.organizer.username }}</div>
+                <div class="text-sm text-muted">{{ event.organizer.email }}</div>
+                {% if event.organizer.profile %}<div class="text-sm text-muted">{{ event.organizer.profile.department }}</div>{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card mb-2">
+            <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Admin Actions</h3>
+            <form method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <label>Note to Organizer (required for correction/rejection)</label>
+                <textarea name="admin_note" class="form-control" rows="3" placeholder="Explain what needs to be changed, or reason for rejection...">{{ event.admin_note }}</textarea>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <button type="submit" name="action" value="approve" class="btn btn-success" style="justify-content:center;">✅ Approve & Make Live</button>
+                <button type="submit" name="action" value="correction" class="btn btn-warning" style="justify-content:center;" onclick="return document.querySelector('[name=admin_note]').value || (alert('Please add a note for the organizer') || false)">⚠️ Send for Correction</button>
+                <button type="submit" name="action" value="reject" class="btn btn-danger" style="justify-content:center;" onclick="return confirm('Reject this event?')">❌ Reject Event</button>
+                {% if event.status == 'active' %}
+                <hr style="border:0.5px solid var(--border);">
+                <button type="submit" name="action" value="complete" class="btn btn-outline" style="justify-content:center;">Mark as Completed</button>
+                <button type="submit" name="action" value="cancel" class="btn btn-outline" style="justify-content:center;color:var(--red);">Cancel Event</button>
+                {% endif %}
+              </div>
+            </form>
+          </div>
+          <div class="card">
+            <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Registrations ({{ registrations.count }})</h3>
+            {% if registrations %}
+            <table class="table">
+              <thead><tr><th>Student</th><th>Ticket</th><th>Check-in</th><th>Cert</th></tr></thead>
+              <tbody>
+              {% for reg in registrations %}
+              <tr>
+                <td>
+                  <div style="font-size:12px;font-weight:500;">{{ reg.student.get_full_name|default:reg.student.username }}</div>
+                  <div class="text-sm text-muted">{% if reg.student.profile %}{{ reg.student.profile.roll_number }}{% endif %}</div>
+                </td>
+                <td class="text-sm">#{{ reg.ticket_number }}</td>
+                <td>{% if reg.checked_in %}<span class="badge badge-active" style="font-size:10px;">In</span>{% else %}<span class="badge badge-pending" style="font-size:10px;">—</span>{% endif %}</td>
+                <td>
+                  <form method="POST" action="/admin-panel/cert/{{ reg.pk }}/issue/">
+                    {% csrf_token %}
+                    <select name="cert_type" style="font-size:10px;padding:2px 4px;border:0.5px solid var(--border);border-radius:4px;">
+                      <option value="participation">Part.</option>
+                      <option value="winner_1">1st</option>
+                      <option value="winner_2">2nd</option>
+                      <option value="winner_3">3rd</option>
+                    </select>
+                    <button class="btn btn-outline btn-sm" style="font-size:10px;padding:2px 6px;">Issue</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="text-sm text-muted">No registrations yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

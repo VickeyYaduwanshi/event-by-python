@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Ticket #{{ registration.ticket_number }}{% endblock %}
+{% block body %}
+<div class="layout">
+  {% include 'includes/student_sidebar.html' %}
+  <div class="main-content">
+    <div class="topbar"><h1>Your Event Ticket</h1><a href="/student/my-events/" class="btn btn-outline btn-sm">← My Events</a></div>
+    <div class="page-body">
+      <div style="max-width:600px;margin:0 auto;">
+        <div style="background:#fff;border-radius:16px;border:0.5px solid var(--border);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.08);">
+          <div style="background:{% if registration.event.category == 'technical' %}var(--purple){% elif registration.event.category == 'cultural' %}var(--pink){% elif registration.event.category == 'sports' %}var(--amber){% elif registration.event.category == 'workshop' %}var(--teal){% else %}var(--gray){% endif %};padding:1.5rem;color:#fff;text-align:center;">
+            <div style="font-size:12px;opacity:.8;margin-bottom:4px;">{{ registration.event.get_category_display }} Event</div>
+            <h2 style="font-size:20px;font-weight:500;">{{ registration.event.title }}</h2>
+            <div style="font-size:13px;opacity:.85;margin-top:4px;">{{ registration.event.event_date|date:"D, M d Y" }} • {{ registration.event.event_time|time:"g:i A" }}</div>
+          </div>
+          <div style="padding:1.5rem;text-align:center;">
+            <div style="font-size:48px;font-weight:700;color:var(--purple);letter-spacing:4px;font-family:monospace;">#{{ registration.ticket_number }}</div>
+            <p class="text-muted text-sm" style="margin-top:.25rem;">Show this at entry gate</p>
+            {% if registration.checked_in %}
+            <div class="badge badge-active" style="font-size:14px;padding:6px 20px;margin-top:.75rem;">✓ Checked In — {{ registration.checked_in_at|date:"M d, g:i A" }}</div>
+            {% endif %}
+          </div>
+          <div style="border-top:2px dashed var(--border);margin:0 1.5rem;"></div>
+          <div style="padding:1.5rem;">
+            <div class="grid-2" style="gap:12px;">
+              <div><div class="text-sm text-muted">Name</div><div style="font-weight:500;font-size:13px;">{{ registration.student.get_full_name|default:registration.student.username }}</div></div>
+              <div><div class="text-sm text-muted">Roll No.</div><div style="font-weight:500;font-size:13px;">{% if registration.student.profile %}{{ registration.student.profile.roll_number|default:"—" }}{% endif %}</div></div>
+              <div><div class="text-sm text-muted">Venue</div><div style="font-weight:500;font-size:13px;">{{ registration.event.venue }}</div></div>
+              <div><div class="text-sm text-muted">Status</div><div><span class="badge badge-{{ registration.status }}">{{ registration.get_status_display }}</span></div></div>
+              {% if registration.team_name %}<div><div class="text-sm text-muted">Team</div><div style="font-weight:500;font-size:13px;">{{ registration.team_name }}</div></div>{% endif %}
+              <div><div class="text-sm text-muted">Registered</div><div style="font-weight:500;font-size:13px;">{{ registration.registered_at|date:"M d, Y" }}</div></div>
+            </div>
+          </div>
+          <div style="padding:1rem 1.5rem;background:var(--bg);display:flex;gap:10px;justify-content:center;">
+            <a href="/student/my-events/" class="btn btn-outline">← All Events</a>
+            <button onclick="window.print()" class="btn btn-primary">🖨️ Print Ticket</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
