@@ -1,13 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Register — Campus Events{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/accounts/register.css' %}">{% endblock %}
 {% block body %}
-<style>
-body{background:linear-gradient(135deg,#534AB7 0%,#1D9E75 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
-.reg-box{background:#fff;border-radius:16px;padding:2rem;width:100%;max-width:520px;box-shadow:0 8px 32px rgba(0,0,0,.15);}
-.back-link{display:block;text-align:center;margin-top:1rem;font-size:13px;color:#fff;opacity:.8;}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-@media(max-width:600px){.grid-2{grid-template-columns:1fr;}}
-</style>
 <div>
 <div class="reg-box">
   <div style="text-align:center;margin-bottom:1.5rem;">
