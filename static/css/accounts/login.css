@@ -1,7 +1,56 @@
-body{background:linear-gradient(135deg,#534AB7 0%,#1D9E75 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;}
-.login-box{background:#fff;border-radius:16px;padding:2rem;width:100%;max-width:450px;box-shadow:0 8px 32px rgba(0,0,0,.15);}
-.back-link{display:block;text-align:center;margin-top:1rem;font-size:13px;color:#fff;opacity:.8;}
-.role-tabs{display:flex;gap:0;margin-bottom:1.5rem;border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.role-tab{flex:1;padding:8px;text-align:center;font-size:13px;cursor:pointer;text-decoration:none;color:var(--text-muted);}
-.role-tab.active{background:var(--purple);color:#fff;}
-.login-field-label{font-size:12px;text-transform:uppercase;color:#999;margin-bottom:0.3rem;}
+body {
+  background: linear-gradient(135deg, #534AB7 0%, #1D9E75 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 13px;
+  color: #fff;
+  opacity: .8;
+}
+
+.role-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.role-tab {
+  flex: 1;
+  padding: 8px;
+  text-align: center;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-muted);
+}
+
+.role-tab.active {
+  background: var(--purple);
+  color: #fff;
+}
+
+.login-field-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 0.3rem;
+}

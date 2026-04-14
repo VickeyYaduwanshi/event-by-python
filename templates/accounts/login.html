@@ -30,7 +30,7 @@
         {% if role == 'admin' %}Username{% elif role == 'organizer' %}Gmail{% else %}Enrollment Number{% endif %}
       </label>
       <input type="{% if role == 'organizer' %}email{% else %}text{% endif %}" name="username" class="form-control" 
-        placeholder="{% if role == 'admin' %}user-219 or just 219{% elif role == 'organizer' %}Enter Gmail{% else %}Enter enrollment number{% endif %}" 
+        placeholder="{% if role == 'admin' %}Admin ID{% elif role == 'organizer' %}Enter Gmail{% else %}Enter enrollment number{% endif %}" 
         required autofocus>
     </div>
     <div class="form-group">
@@ -46,9 +46,7 @@
     New user? <a href="/accounts/register/?role={{ role }}" style="color:#534AB7;font-weight:500;">Create Account</a>
   </p>
   {% else %}
-  <p style="text-align:center;font-size:12px;margin-top:1rem;color:var(--text-muted);">
-    Default Credentials: <strong>user-219</strong> / <strong>8120</strong>
-  </p>
+
   {% endif %}
 </div>
 <a href="/" class="back-link">← Back to Home</a>
