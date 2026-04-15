@@ -68,7 +68,7 @@ def login_view(request):
 def redirect_by_role(user):
     try:
         profile = user.profile
-        if profile.role == 'admin' or user.is_superuser:
+        if profile.role == 'admin':
             return redirect('/admin-panel/dashboard/')
         elif profile.role == 'organizer':
             return redirect('/organizer/dashboard/')

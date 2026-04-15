@@ -30,7 +30,8 @@
           <span>
             ⚠️ <strong>{{ event.title }}</strong> needs correction: {{ event.admin_note }}
           </span>
-          <a href="/organizer/edit/{{ event.pk }}/" class="btn btn-warning btn-sm">Fix Now</a>
+          <a href="/organizer/edit/{{ event.pk }}/" class="btn btn-warning btn-sm">
+            Fix Now</a>
         </div>
         {% endif %}
       {% endfor %}

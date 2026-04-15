@@ -19,7 +19,8 @@ class Event(models.Model):
         ('other', 'Other'),
     ]
 
-    organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events')
+    organizer = models.ForeignKey(User, on_delete=models.CASCADE, 
+                                   related_name='organized_events')
     title = models.CharField(max_length=200)
     description = models.TextField()
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
