@@ -1,54 +1,108 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}Login — Campus Events{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/accounts/login.css' %}">{% endblock %}
-{% block body %}
-<div>
-<div class="login-box">
-  <div style="text-align:center;margin-bottom:1.5rem;">
-    <div style="font-size:2rem;">
-      {% if role == 'admin' %}🔑{% elif role == 'organizer' %}🎯{% else %}🎓{% endif %}
-    </div>
-    <h2 style="font-size:20px;font-weight:500;margin-top:.5rem;">
-      {% if role == 'admin' %}Admin Login{% elif role == 'organizer' %}Organizer Login{% else %}Student Login{% endif %}
-    </h2>
-    <p style="font-size:13px;color:var(--text-muted);">Campus Events Hub</p>
-  </div>
-  <div class="role-tabs">
-    <a href="/accounts/login/?role=student" class="role-tab {% if role == 'student' %}active{% endif %}">🎓 Student</a>
-    <a href="/accounts/login/?role=organizer" class="role-tab {% if role == 'organizer' %}active{% endif %}">🎯 Organizer</a>
-    <a href="/accounts/login/?role=admin" class="role-tab {% if role == 'admin' %}active{% endif %}">🔑 Admin</a>
-  </div>
-  {% if messages %}
-    {% for msg in messages %}<div class="alert alert-error">{{ msg }}</div>{% endfor %}
-  {% endif %}
-  <form method="POST">
-    {% csrf_token %}
-    <input type="hidden" name="role" value="{{ role }}">
-    <div class="form-group">
-      <label class="login-field-label">
-        {% if role == 'admin' %}Username{% elif role == 'organizer' %}Gmail{% else %}Enrollment Number{% endif %}
-      </label>
-      <input type="{% if role == 'organizer' %}email{% else %}text{% endif %}" name="username" class="form-control" 
-        placeholder="{% if role == 'admin' %}Admin ID{% elif role == 'organizer' %}Enter Gmail{% else %}Enter enrollment number{% endif %}" 
-        required autofocus>
-    </div>
-    <div class="form-group">
-      <label class="login-field-label">Password</label>
-      <input type="password" name="password" class="form-control" placeholder="Enter password" required>
-    </div>
-    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;">
-      Login as {% if role == 'admin' %}Admin{% elif role == 'organizer' %}Organizer{% else %}Student{% endif %}
-    </button>
-  </form>
-  {% if role != 'admin' %}
-  <p style="text-align:center;font-size:13px;margin-top:1rem;color:var(--text-muted);">
-    New user? <a href="/accounts/register/?role={{ role }}" style="color:#534AB7;font-weight:500;">Create Account</a>
-  </p>
-  {% else %}
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Login — Campus Events{% endblock %} 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/accounts/login.css' %}"/>{% endblock %} 
 
-  {% endif %}
+{% block body %}
+
+<div>
+  <div class="login-box">
+    <div style="text-align: center; margin-bottom: 1.5rem">
+      <div style="font-size: 2rem">
+        {% if role == 'admin' %}🔑
+        {% elif role == 'organizer' %}🎯
+        {% else %}🎓
+        {% endif %}
+      </div>
+
+      <h2 style="font-size: 20px; font-weight: 500; margin-top: 0.5rem">
+        {% if role == 'admin' %}Admin Login
+        {% elif role == 'organizer'%}Organizer Login
+        {% else %}Student Login
+        {% endif %}
+      </h2>
+
+      <p style="font-size: 13px; color: var(--text-muted)">Campus Events Hub</p>
+    </div>
+    
+    <div class="role-tabs">
+      <a href="/accounts/login/?role=student"
+         class="role-tab {% if role == 'student' %}active{% endif %}">
+         🎓 Student</a>
+
+      <a href="/accounts/login/?role=organizer"
+         class="role-tab {% if role == 'organizer' %}active{% endif %}">
+        🎯 Organizer</a>
+      
+      <a href="/accounts/login/?role=admin"
+         class="role-tab {% if role == 'admin' %}active{% endif %}">
+        🔑 Admin</a>
+      
+    </div>
+    {% if messages %} 
+    {% for msg in messages %}
+    <div class="alert alert-error">{{ msg }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="role" value="{{ role }}" />
+      <div class="form-group">
+        <label class="login-field-label">
+          {% if role == 'admin' %}AdminID
+          {% elif role == 'organizer' %}Gmail
+          {% else %}Enrollment Number
+          {% endif %}
+        </label>
+
+        <input
+          type="{% if role == 'organizer' %}email
+                {% else %}text
+                {% endif %}"
+          name="username"
+          class="form-control"
+          placeholder="{% if role == 'admin' %}Admin ID
+                       {% elif role == 'organizer' %}Enter Gmail
+                       {% else %}Enter enrollment number
+                       {% endif %}"
+          required
+          autofocus/>
+      </div>
+
+      <div class="form-group">
+        <label class="login-field-label">Password</label>
+        <input type="password" name="password" class="form-control"
+               placeholder="Enter password" required />
+      </div>
+
+      <button type="submit" class="btn btn-primary"
+               style="width: 100%; justify-content: center; padding: 10px">
+              
+        Login as {% if role == 'admin' %}Admin
+                 {% elif role == 'organizer'%}Organizer
+                 {% else %}Student
+                {% endif %}
+      </button>
+
+    </form>
+
+
+    {% if role != 'admin' %}
+    <p style="text-align: center;font-size: 13px;margin-top: 1rem;
+              color: var(--text-muted);">
+    
+      New user?
+      <a href="/accounts/register/?role={{ role }}"
+         style="color: #534ab7; font-weight: 500">Create Account</a>
+         
+    </p>
+    {% endif %}
+
+  </div>
+
+  <a href="/" class="back-link">← Back to Home</a>
 </div>
-<a href="/" class="back-link">← Back to Home</a>
-</div>
+
 {% endblock %}

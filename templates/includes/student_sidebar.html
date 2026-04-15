@@ -1,22 +1,46 @@
 <div class="sidebar">
+  <!-- Sidebar Logo -->
   <div class="sidebar-logo">
     <h2>🎓 Student</h2>
     <p>Campus Events Hub</p>
   </div>
+
+  <!-- User Info -->
   <div class="sidebar-user">
-    <div class="avatar" style="background:var(--teal-light);color:var(--teal);">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+    <div class="avatar" style="background: var(--teal-light); color: var(--teal);">
+      {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+    </div>
     <div>
       <div class="name">{{ request.user.get_full_name|default:request.user.username }}</div>
-      <div class="role">{% if request.user.profile.enrollment_number %}{{ request.user.profile.enrollment_number }} • {% endif %}Student</div>
+      <div class="role">
+        {% if request.user.profile.enrollment_number %}
+        {{ request.user.profile.enrollment_number }} •
+        {% endif %}
+        Student
+      </div>
     </div>
   </div>
+
+  <!-- Navigation -->
   <nav class="sidebar-nav">
-    <a href="/student/dashboard/" class="{% if request.path == '/student/dashboard/' %}active{% endif %}"><span class="icon">🏠</span>Dashboard</a>
-    <a href="/student/discover/" class="{% if request.path == '/student/discover/' %}active{% endif %}"><span class="icon">🔍</span>Discover Events</a>
-    <a href="/student/my-events/" class="{% if request.path == '/student/my-events/' %}active{% endif %}"><span class="icon">📅</span>My Events</a>
-    <a href="/student/certificates/" class="{% if request.path == '/student/certificates/' %}active{% endif %}"><span class="icon">🏆</span>Certificates</a>
+    <a href="/student/dashboard/" class="{% if request.path == '/student/dashboard/' %}active{% endif %}">
+      <span class="icon">🏠</span>Dashboard
+    </a>
+    <a href="/student/discover/" class="{% if request.path == '/student/discover/' %}active{% endif %}">
+      <span class="icon">🔍</span>Discover Events
+    </a>
+    <a href="/student/my-events/" class="{% if request.path == '/student/my-events/' %}active{% endif %}">
+      <span class="icon">📅</span>My Events
+    </a>
+    <a href="/student/certificates/" class="{% if request.path == '/student/certificates/' %}active{% endif %}">
+      <span class="icon">🏆</span>Certificates
+    </a>
   </nav>
+
+  <!-- Logout -->
   <div class="sidebar-footer">
-    <a href="/accounts/logout/" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;">Logout</a>
+    <a href="/accounts/logout/" class="btn btn-outline btn-sm" style="width: 100%; justify-content: center;">
+      Logout
+    </a>
   </div>
 </div>

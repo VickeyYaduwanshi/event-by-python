@@ -1,43 +1,98 @@
 {% extends 'base.html' %}
 {% block title %}My Certificates{% endblock %}
 {% block body %}
+
 <div class="layout">
   {% include 'includes/student_sidebar.html' %}
+
   <div class="main-content">
-    <div class="topbar"><h1>My Certificates 🏆</h1></div>
+    <div class="topbar">
+      <h1>My Certificates 🏆</h1>
+    </div>
+
     <div class="page-body">
+      <!-- Statistics Cards -->
       <div class="grid-3 mb-3">
-        <div class="stat-card"><div class="label">Total Certificates</div><div class="value" style="color:var(--purple);">{{ certificates.count }}</div></div>
-        <div class="stat-card"><div class="label">Awards</div><div class="value" style="color:var(--amber);">{{ certificates|length }}</div></div>
-        <div class="stat-card"><div class="label">This Year</div><div class="value" style="color:var(--teal);">{{ certificates.count }}</div></div>
+        <div class="stat-card">
+          <div class="label">Total Certificates</div>
+          <div class="value" style="color: var(--purple);">{{ certificates.count }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Awards</div>
+          <div class="value" style="color: var(--amber);">{{ certificates|length }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">This Year</div>
+          <div class="value" style="color: var(--teal);">{{ certificates.count }}</div>
+        </div>
       </div>
+
+      <!-- Certificates Grid -->
       {% if certificates %}
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
         {% for cert in certificates %}
-        <div style="background:#fff;border-radius:var(--radius-lg);border:{% if cert.cert_type == 'winner_1' %}2px solid var(--amber){% else %}0.5px solid var(--border){% endif %};overflow:hidden;">
-          <div style="background:{% if cert.cert_type == 'winner_1' %}linear-gradient(135deg,var(--purple),#7F77DD){% elif cert.cert_type == 'winner_2' %}linear-gradient(135deg,#888,#aaa){% elif cert.cert_type == 'winner_3' %}linear-gradient(135deg,#CD7F32,#E8A060){% elif cert.cert_type == 'participation' %}var(--teal){% else %}var(--purple){% endif %};padding:14px;display:flex;justify-content:space-between;align-items:flex-start;">
+        <div style="background: #fff; border-radius: var(--radius-lg);
+                    border: {% if cert.cert_type == 'winner_1' %}2px solid var(--amber)
+                            {% else %}0.5px solid var(--border){% endif %};
+                    overflow: hidden;">
+          <!-- Header with Gradient -->
+          <div style="background: {% if cert.cert_type == 'winner_1' %}linear-gradient(135deg, var(--purple), #7F77DD)
+                                 {% elif cert.cert_type == 'winner_2' %}linear-gradient(135deg, #888, #aaa)
+                                 {% elif cert.cert_type == 'winner_3' %}linear-gradient(135deg, #CD7F32, #E8A060)
+                                 {% elif cert.cert_type == 'participation' %}var(--teal)
+                                 {% else %}var(--purple){% endif %};
+                      padding: 14px; display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
-              <div style="font-size:10px;color:rgba(255,255,255,.7);margin-bottom:2px;text-transform:uppercase;">{{ cert.get_cert_type_display }}</div>
-              <div style="font-size:15px;font-weight:500;color:#fff;">{{ cert.event.title }}</div>
+              <div style="font-size: 10px; color: rgba(255, 255, 255, 0.7); margin-bottom: 2px; text-transform: uppercase;">
+                {{ cert.get_cert_type_display }}
+              </div>
+              <div style="font-size: 15px; font-weight: 500; color: #fff;">
+                {{ cert.event.title }}
+              </div>
             </div>
-            <div style="font-size:24px;">{% if cert.cert_type == 'winner_1' %}🥇{% elif cert.cert_type == 'winner_2' %}🥈{% elif cert.cert_type == 'winner_3' %}🥉{% else %}🎓{% endif %}</div>
+            <div style="font-size: 24px;">
+              {% if cert.cert_type == 'winner_1' %}🥇
+              {% elif cert.cert_type == 'winner_2' %}🥈
+              {% elif cert.cert_type == 'winner_3' %}🥉
+              {% else %}🎓{% endif %}
+            </div>
           </div>
-          <div style="padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;">
-            <div><div class="text-sm text-muted">{{ cert.event.get_category_display }} • {{ cert.issued_at|date:"M d, Y" }}</div><div class="text-sm" style="color:var(--purple);">{{ cert.cert_number }}</div></div>
-            <button onclick="alert('Download feature — integrate with PDF generation')" class="btn btn-primary btn-sm">Download</button>
+
+          <!-- Footer with Info -->
+          <div style="padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div class="text-sm text-muted">
+                {{ cert.event.get_category_display }} • {{ cert.issued_at|date:"M d, Y" }}
+              </div>
+              <div class="text-sm" style="color: var(--purple);">
+                {{ cert.cert_number }}
+              </div>
+            </div>
+            <button onclick="alert('Download feature — integrate with PDF generation')" class="btn btn-primary btn-sm">
+              Download
+            </button>
           </div>
         </div>
         {% endfor %}
       </div>
+
       {% else %}
-      <div class="card text-center" style="padding:3rem;">
-        <p style="font-size:2.5rem;">🏆</p>
-        <p style="font-size:16px;font-weight:500;margin:.5rem 0;">No certificates yet</p>
-        <p class="text-muted text-sm">Participate in events to earn certificates!</p>
-        <a href="/student/discover/" class="btn btn-primary" style="margin-top:1rem;">Discover Events →</a>
+      <!-- Empty State -->
+      <div class="card text-center" style="padding: 3rem;">
+        <p style="font-size: 2.5rem;">🏆</p>
+        <p style="font-size: 16px; font-weight: 500; margin: 0.5rem 0;">
+          No certificates yet
+        </p>
+        <p class="text-muted text-sm">
+          Participate in events to earn certificates!
+        </p>
+        <a href="/student/discover/" class="btn btn-primary" style="margin-top: 1rem;">
+          Discover Events →
+        </a>
       </div>
       {% endif %}
     </div>
   </div>
 </div>
+
 {% endblock %}

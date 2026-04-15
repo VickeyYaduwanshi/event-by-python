@@ -1,59 +1,135 @@
 {% extends 'base.html' %}
 {% block title %}Admin Dashboard{% endblock %}
 {% block body %}
+
 <div class="layout">
   {% include 'includes/admin_sidebar.html' %}
+
   <div class="main-content">
     <div class="topbar">
       <h1>Admin Dashboard</h1>
-      {% if pending_events > 0 %}<span class="badge badge-pending" style="font-size:13px;padding:6px 14px;">⏳ {{ pending_events }} pending approval</span>{% endif %}
+      {% if pending_events > 0 %}
+      <span class="badge badge-pending" style="font-size: 13px; padding: 6px 14px;">
+        ⏳ {{ pending_events }} pending approval
+      </span>
+      {% endif %}
     </div>
+
     <div class="page-body">
-      {% if messages %}{% for msg in messages %}<div class="alert alert-success">{{ msg }}</div>{% endfor %}{% endif %}
-      <div class="grid-4 mb-3" style="grid-template-columns:repeat(3,1fr) 1fr;">
-        <div class="stat-card" style="border-left:4px solid var(--amber);"><div class="label">Pending Approval</div><div class="value" style="color:var(--amber);">{{ pending_events }}</div><div class="sub"><a href="/admin-panel/pending/">Review now →</a></div></div>
-        <div class="stat-card" style="border-left:4px solid var(--teal);"><div class="label">Active Events</div><div class="value" style="color:var(--teal);">{{ active_events }}</div></div>
-        <div class="stat-card" style="border-left:4px solid var(--purple);"><div class="label">Total Registrations</div><div class="value" style="color:var(--purple);">{{ total_registrations }}</div></div>
-        <div class="stat-card" style="border-left:4px solid var(--gray);"><div class="label">Users</div><div class="value">{{ total_students|add:total_organizers }}</div><div class="sub">{{ total_students }} students, {{ total_organizers }} organizers</div></div>
+      {% if messages %}
+      {% for msg in messages %}
+      <div class="alert alert-success">{{ msg }}</div>
+      {% endfor %}
+      {% endif %}
+
+      <!-- Statistics Cards -->
+      <div class="grid-4 mb-3" style="grid-template-columns: repeat(3, 1fr) 1fr;">
+        <!-- Pending Approval -->
+        <div class="stat-card" style="border-left: 4px solid var(--amber);">
+          <div class="label">Pending Approval</div>
+          <div class="value" style="color: var(--amber);">{{ pending_events }}</div>
+          <div class="sub">
+            <a href="/admin-panel/pending/">Review now →</a>
+          </div>
+        </div>
+
+        <!-- Active Events -->
+        <div class="stat-card" style="border-left: 4px solid var(--teal);">
+          <div class="label">Active Events</div>
+          <div class="value" style="color: var(--teal);">{{ active_events }}</div>
+        </div>
+
+        <!-- Total Registrations -->
+        <div class="stat-card" style="border-left: 4px solid var(--purple);">
+          <div class="label">Total Registrations</div>
+          <div class="value" style="color: var(--purple);">{{ total_registrations }}</div>
+        </div>
+
+        <!-- Users -->
+        <div class="stat-card" style="border-left: 4px solid var(--gray);">
+          <div class="label">Users</div>
+          <div class="value">{{ total_students|add:total_organizers }}</div>
+          <div class="sub">
+            {{ total_students }} students, {{ total_organizers }} organizers
+          </div>
+        </div>
       </div>
 
+      <!-- Main Content Grid -->
       <div class="grid-2">
+        <!-- Pending Events -->
         <div class="card">
           <div class="flex-between mb-2">
-            <h3 style="font-size:15px;font-weight:500;">⏳ Pending Events</h3>
+            <h3 style="font-size: 15px; font-weight: 500;">⏳ Pending Events</h3>
             <a href="/admin-panel/pending/" class="btn btn-outline btn-sm">View All</a>
           </div>
           {% if recent_pending %}
           <table class="table">
-            <thead><tr><th>Event</th><th>Organizer</th><th>Date</th><th>Action</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Organizer</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
             <tbody>
             {% for event in recent_pending %}
             <tr>
-              <td><div style="font-weight:500;font-size:13px;">{{ event.title }}</div><span class="badge badge-{{ event.category }}">{{ event.get_category_display }}</span></td>
-              <td class="text-sm text-muted">{{ event.organizer.get_full_name|default:event.organizer.username }}</td>
+              <td>
+                <div style="font-weight: 500; font-size: 13px;">{{ event.title }}</div>
+                <span class="badge badge-{{ event.category }}">
+                  {{ event.get_category_display }}
+                </span>
+              </td>
+              <td class="text-sm text-muted">
+                {{ event.organizer.get_full_name|default:event.organizer.username }}
+              </td>
               <td class="text-sm text-muted">{{ event.event_date }}</td>
-              <td><a href="/admin-panel/events/{{ event.pk }}/review/" class="btn btn-warning btn-sm">Review</a></td>
+              <td>
+                <a href="/admin-panel/events/{{ event.pk }}/review/" class="btn btn-warning btn-sm">
+                  Review
+                </a>
+              </td>
             </tr>
             {% endfor %}
             </tbody>
           </table>
           {% else %}
-          <p class="text-sm text-muted text-center" style="padding:1.5rem;">No pending events. All clear! ✅</p>
+          <p class="text-sm text-muted text-center" style="padding: 1.5rem;">
+            No pending events. All clear! ✅
+          </p>
           {% endif %}
         </div>
 
+        <!-- Recent Events -->
         <div class="card">
           <div class="flex-between mb-2">
-            <h3 style="font-size:15px;font-weight:500;">Recent Events</h3>
+            <h3 style="font-size: 15px; font-weight: 500;">Recent Events</h3>
             <a href="/admin-panel/events/" class="btn btn-outline btn-sm">All Events</a>
           </div>
           <table class="table">
-            <thead><tr><th>Event</th><th>Status</th><th>Registrations</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Status</th>
+                <th>Registrations</th>
+              </tr>
+            </thead>
             <tbody>
             {% for event in all_events %}
             <tr>
-              <td><div style="font-size:13px;font-weight:500;">{{ event.title|truncatechars:30 }}</div><div class="text-sm text-muted">{{ event.event_date }}</div></td>
-              <td><span class="badge badge-{{ event.status }}">{{ event.get_status_display }}</span></td>
+              <td>
+                <div style="font-size: 13px; font-weight: 500;">
+                  {{ event.title|truncatechars:30 }}
+                </div>
+                <div class="text-sm text-muted">{{ event.event_date }}</div>
+              </td>
+              <td>
+                <span class="badge badge-{{ event.status }}">
+                  {{ event.get_status_display }}
+                </span>
+              </td>
               <td class="text-sm">{{ event.registered_count }}/{{ event.max_capacity }}</td>
             </tr>
             {% endfor %}
@@ -64,4 +140,5 @@
     </div>
   </div>
 </div>
+
 {% endblock %}

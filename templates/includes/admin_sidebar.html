@@ -1,23 +1,44 @@
 <div class="sidebar">
+  <!-- Sidebar Logo -->
   <div class="sidebar-logo">
     <h2>🔑 Admin</h2>
     <p>Campus Events Hub</p>
   </div>
+
+  <!-- User Info -->
   <div class="sidebar-user">
-    <div class="avatar" style="background:var(--amber-light);color:var(--amber);">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+    <div class="avatar" style="background: var(--amber-light); color: var(--amber);">
+      {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+    </div>
     <div>
       <div class="name">{{ request.user.get_full_name|default:request.user.username }}</div>
       <div class="role">Administrator</div>
     </div>
   </div>
+
+  <!-- Navigation -->
   <nav class="sidebar-nav">
-    <a href="/admin-panel/dashboard/" class="{% if request.path == '/admin-panel/dashboard/' %}active{% endif %}"><span class="icon">📊</span>Dashboard</a>
-    <a href="/admin-panel/pending/" class="{% if request.path == '/admin-panel/pending/' %}active{% endif %}"><span class="icon">⏳</span>Pending Approvals</a>
-    <a href="/admin-panel/events/" class="{% if request.path == '/admin-panel/events/' %}active{% endif %}"><span class="icon">📋</span>All Events</a>
-    <a href="/admin-panel/users/" class="{% if request.path == '/admin-panel/users/' %}active{% endif %}"><span class="icon">👥</span>Manage Users</a>
-    <a href="/admin-panel/analytics/" class="{% if request.path == '/admin-panel/analytics/' %}active{% endif %}"><span class="icon">📈</span>Analytics</a>
+    <a href="/admin-panel/dashboard/" class="{% if request.path == '/admin-panel/dashboard/' %}active{% endif %}">
+      <span class="icon">📊</span>Dashboard
+    </a>
+    <a href="/admin-panel/pending/" class="{% if request.path == '/admin-panel/pending/' %}active{% endif %}">
+      <span class="icon">⏳</span>Pending Approvals
+    </a>
+    <a href="/admin-panel/events/" class="{% if request.path == '/admin-panel/events/' %}active{% endif %}">
+      <span class="icon">📋</span>All Events
+    </a>
+    <a href="/admin-panel/users/" class="{% if request.path == '/admin-panel/users/' %}active{% endif %}">
+      <span class="icon">👥</span>Manage Users
+    </a>
+    <a href="/admin-panel/analytics/" class="{% if request.path == '/admin-panel/analytics/' %}active{% endif %}">
+      <span class="icon">📈</span>Analytics
+    </a>
   </nav>
+
+  <!-- Logout -->
   <div class="sidebar-footer">
-    <a href="/accounts/logout/" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;">Logout</a>
+    <a href="/accounts/logout/" class="btn btn-outline btn-sm" style="width: 100%; justify-content: center;">
+      Logout
+    </a>
   </div>
 </div>

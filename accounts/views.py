@@ -6,66 +6,63 @@ from .models import UserProfile
 import hashlib
 
 def login_view(request):
+    # 🔹 Already logged-in user → redirect
     if request.user.is_authenticated:
         return redirect_by_role(request.user)
-    
+
     role = request.GET.get('role', 'student')
-    
+
     if request.method == 'POST':
-        role_post = request.POST.get('role', 'student')
+        role_post= request.POST.get('role', 'student')
+        username = request.POST.get('username', '').strip()
         password = request.POST.get('password')
-        
-        # Admin login - hardcoded
+
+        # ================= ADMIN LOGIN =================
         if role_post == 'admin':
-            username_input = request.POST.get('username', '').strip()
-            # Accept both "219" and "user-219"
-            if not username_input.startswith('user-'):
-                username_input = f'user-{username_input}'
-            
-            if username_input == 'user-219' and password == '8120':
-                # Get or create admin user
+
+            if username == '219' and password == '8120':
                 admin_user, created = User.objects.get_or_create(
                     username='admin_user',
-                    defaults={'email': 'admin@collegeevents.com', 'is_staff': True, 'is_superuser': True}
                 )
-                if created:
-                    admin_user.set_password('8120')
-                    admin_user.save()
-                    UserProfile.objects.get_or_create(user=admin_user, defaults={'role': 'admin'})
-                
+
                 login(request, admin_user)
                 return redirect('/admin-panel/dashboard/')
             else:
                 messages.error(request, 'Invalid admin credentials.')
-        
-        # Student login - enrollment number + password
+
+        # ================= STUDENT LOGIN =================
         elif role_post == 'student':
-            enrollment = request.POST.get('username')
             try:
-                profile = UserProfile.objects.get(enrollment_number=enrollment, role='student')
+                profile = UserProfile.objects.get(
+                    enrollment_number=username,
+                    role='student'
+                )
                 user = profile.user
+
                 if user.check_password(password):
                     login(request, user)
                     return redirect_by_role(user)
-                else:
-                    messages.error(request, 'Invalid enrollment number or password.')
+
             except UserProfile.DoesNotExist:
-                messages.error(request, 'Invalid enrollment number or password.')
-        
-        # Organizer login - Gmail + password
+                pass
+
+            messages.error(request, 'Invalid enrollment number or password.')
+
+        # ================= ORGANIZER LOGIN =================
         elif role_post == 'organizer':
-            email = request.POST.get('username')
             try:
-                user = User.objects.get(email=email)
+                user = User.objects.get(email=username)
                 profile = user.profile
+
                 if profile.role == 'organizer' and user.check_password(password):
                     login(request, user)
                     return redirect_by_role(user)
-                else:
-                    messages.error(request, 'Invalid email or password.')
+
             except User.DoesNotExist:
-                messages.error(request, 'Invalid email or password.')
-    
+                pass
+
+            messages.error(request, 'Invalid email or password.')
+
     return render(request, 'accounts/login.html', {'role': role})
 
 def redirect_by_role(user):

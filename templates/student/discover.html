@@ -1,69 +1,139 @@
 {% extends 'base.html' %}
 {% block title %}Discover Events{% endblock %}
 {% block body %}
+
 <div class="layout">
   {% include 'includes/student_sidebar.html' %}
+
   <div class="main-content">
-    <div class="topbar"><h1>Discover Events</h1></div>
+    <div class="topbar">
+      <h1>Discover Events</h1>
+    </div>
+
     <div class="page-body">
+      <!-- Filters Section -->
       <div class="card mb-3">
-        <form method="GET" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
-          <div style="flex:1;min-width:200px;"><label class="text-sm text-muted" style="display:block;margin-bottom:4px;">Search</label><input type="text" name="search" class="form-control" placeholder="Search events..." value="{{ search }}"></div>
-          <div><label class="text-sm text-muted" style="display:block;margin-bottom:4px;">Category</label>
+        <form method="GET" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+          <div style="flex: 1; min-width: 200px;">
+            <label class="text-sm text-muted" style="display: block; margin-bottom: 4px;">
+              Search
+            </label>
+            <input type="text" name="search" class="form-control"
+                   placeholder="Search events..." value="{{ search }}"/>
+          </div>
+
+          <div>
+            <label class="text-sm text-muted" style="display: block; margin-bottom: 4px;">
+              Category
+            </label>
             <select name="category" class="form-control">
               <option value="">All Categories</option>
-              <option value="technical" {% if category == 'technical' %}selected{% endif %}>Technical</option>
-              <option value="cultural" {% if category == 'cultural' %}selected{% endif %}>Cultural</option>
-              <option value="sports" {% if category == 'sports' %}selected{% endif %}>Sports</option>
-              <option value="workshop" {% if category == 'workshop' %}selected{% endif %}>Workshop</option>
-              <option value="seminar" {% if category == 'seminar' %}selected{% endif %}>Seminar</option>
+              <option value="technical" {% if category == 'technical' %}selected{% endif %}>
+                Technical
+              </option>
+              <option value="cultural" {% if category == 'cultural' %}selected{% endif %}>
+                Cultural
+              </option>
+              <option value="sports" {% if category == 'sports' %}selected{% endif %}>
+                Sports
+              </option>
+              <option value="workshop" {% if category == 'workshop' %}selected{% endif %}>
+                Workshop
+              </option>
+              <option value="seminar" {% if category == 'seminar' %}selected{% endif %}>
+                Seminar
+              </option>
             </select>
           </div>
+
           <button type="submit" class="btn btn-primary">Filter</button>
-          {% if search or category %}<a href="/student/discover/" class="btn btn-outline">Clear</a>{% endif %}
+          {% if search or category %}
+          <a href="/student/discover/" class="btn btn-outline">Clear</a>
+          {% endif %}
         </form>
       </div>
+
+      <!-- Events Grid -->
       {% if events %}
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
         {% for event in events %}
-        <div style="background:#fff;border-radius:var(--radius-lg);border:0.5px solid var(--border);overflow:hidden;">
-          <div style="height:6px;background:{% if event.category == 'technical' %}var(--purple){% elif event.category == 'cultural' %}var(--pink){% elif event.category == 'sports' %}var(--amber){% elif event.category == 'workshop' %}var(--teal){% else %}var(--gray){% endif %};"></div>
-          <div style="padding:1rem;">
-            <div style="display:flex;justify-content:space-between;margin-bottom:.5rem;">
-              <span class="badge badge-{{ event.category }}">{{ event.get_category_display }}</span>
-              {% if event.pk in registered_ids %}<span class="badge badge-active">✓ Registered</span>{% elif event.registered_count >= event.max_capacity %}<span class="badge badge-rejected">Full</span>{% endif %}
+        <div style="background: #fff; border-radius: var(--radius-lg); border: 0.5px solid var(--border);
+                    overflow: hidden;">
+          <!-- Category Color Bar -->
+          <div style="height: 6px; background:
+                      {% if event.category == 'technical' %}var(--purple)
+                      {% elif event.category == 'cultural' %}var(--pink)
+                      {% elif event.category == 'sports' %}var(--amber)
+                      {% elif event.category == 'workshop' %}var(--teal)
+                      {% else %}var(--gray){% endif %};"></div>
+
+          <!-- Card Body -->
+          <div style="padding: 1rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span class="badge badge-{{ event.category }}">
+                {{ event.get_category_display }}
+              </span>
+              {% if event.pk in registered_ids %}
+              <span class="badge badge-active">✓ Registered</span>
+              {% elif event.registered_count >= event.max_capacity %}
+              <span class="badge badge-rejected">Full</span>
+              {% endif %}
             </div>
-            <h3 style="font-size:15px;font-weight:500;margin-bottom:4px;">{{ event.title }}</h3>
-            <p class="text-sm text-muted">📅 {{ event.event_date|date:"M d, Y" }} • {{ event.event_time|time:"g:i A" }}</p>
+
+            <h3 style="font-size: 15px; font-weight: 500; margin-bottom: 4px;">
+              {{ event.title }}
+            </h3>
+
+            <p class="text-sm text-muted">
+              📅 {{ event.event_date|date:"M d, Y" }} • {{ event.event_time|time:"g:i A" }}
+            </p>
             <p class="text-sm text-muted">📍 {{ event.venue }}</p>
-            <p style="font-size:13px;margin:.75rem 0;color:var(--text-muted);">{{ event.description|truncatechars:90 }}</p>
+
+            <p style="font-size: 13px; margin: 0.75rem 0; color: var(--text-muted);">
+              {{ event.description|truncatechars:90 }}
+            </p>
+
             {% if event.get_tag_list %}
-            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem;">
-              {% for tag in event.get_tag_list %}<span style="font-size:11px;background:var(--bg);padding:2px 8px;border-radius:20px;color:var(--text-muted);">{{ tag }}</span>{% endfor %}
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.75rem;">
+              {% for tag in event.get_tag_list %}
+              <span style="font-size: 11px; background: var(--bg); padding: 2px 8px;
+                           border-radius: 20px; color: var(--text-muted);">
+                {{ tag }}
+              </span>
+              {% endfor %}
             </div>
             {% endif %}
           </div>
-          <div style="padding:.75rem 1rem;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+
+          <!-- Card Footer -->
+          <div style="padding: 0.75rem 1rem; border-top: 0.5px solid var(--border);
+                      display: flex; justify-content: space-between; align-items: center;">
             <span class="text-sm text-muted">{{ event.registered_count }}/{{ event.max_capacity }}</span>
             {% if event.pk in registered_ids %}
-            <span class="btn btn-outline btn-sm" style="cursor:default;">Already Registered</span>
+            <span class="btn btn-outline btn-sm" style="cursor: default;">
+              Already Registered
+            </span>
             {% elif event.registered_count >= event.max_capacity %}
-            <span class="btn btn-outline btn-sm" style="cursor:default;">Full</span>
+            <span class="btn btn-outline btn-sm" style="cursor: default;">Full</span>
             {% else %}
-            <a href="/student/register/{{ event.pk }}/" class="btn btn-success btn-sm">Register →</a>
+            <a href="/student/register/{{ event.pk }}/" class="btn btn-success btn-sm">
+              Register →
+            </a>
             {% endif %}
           </div>
         </div>
         {% endfor %}
       </div>
+
       {% else %}
-      <div class="card text-center" style="padding:3rem;">
-        <p style="font-size:2rem;">🔍</p>
-        <p style="font-size:16px;font-weight:500;margin:.5rem 0;">No events found</p>
+      <div class="card text-center" style="padding: 3rem;">
+        <p style="font-size: 2rem;">🔍</p>
+        <p style="font-size: 16px; font-weight: 500; margin: 0.5rem 0;">No events found</p>
         <p class="text-muted text-sm">Try a different search or check back later.</p>
       </div>
       {% endif %}
     </div>
   </div>
 </div>
+
 {% endblock %}

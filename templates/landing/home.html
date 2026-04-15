@@ -1,13 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Campus Events Hub — Home{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/landing/home.css' %}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/landing/home.css' %}"/>{% endblock %}
+
 {% block body %}
+
 <nav>
   <div class="logo">Campus<span>Events</span></div>
-  <div style="display:flex;gap:12px;align-items:center;">
+  <div style="display: flex; gap: 12px; align-items: center">
     {% if user.is_authenticated %}
-      <span style="font-size:13px;color:var(--text-muted);">Hello, {{ user.first_name|default:user.username }}</span>
+      <span style="font-size: 13px; color: var(--text-muted)">
+        Hello, {{ user.first_name|default:user.username }}
+      </span>
       <a href="/accounts/logout/" class="btn btn-outline btn-sm">Logout</a>
     {% else %}
       <a href="/accounts/login/?role=student" class="btn btn-outline btn-sm">Login</a>
@@ -17,27 +22,43 @@
 </nav>
 
 {% if messages %}
-<div style="padding:.75rem 2rem;">
-{% for msg in messages %}
-<div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
-{% endfor %}
+<div style="padding: 0.75rem 2rem">
+  {% for msg in messages %}
+  <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+  {% endfor %}
 </div>
 {% endif %}
 
 <div class="hero">
   <h1>Campus Events Hub</h1>
-  <p>Discover, register, and manage college events — all in one place for students, organizers, and administrators.</p>
+  <p>Discover, register, and manage college events — all in one place for students,
+     organizers, and administrators.</p>
   <div class="hero-btns">
-    <a href="/accounts/login/?role=student" class="hero-btn hero-btn-primary">🎓 Student Login</a>
-    <a href="/accounts/login/?role=organizer" class="hero-btn hero-btn-outline">🎯 Organizer Login</a>
-    <a href="/accounts/login/?role=admin" class="hero-btn hero-btn-outline">🔑 Admin Login</a>
+    <a href="/accounts/login/?role=student" class="hero-btn hero-btn-primary">
+      🎓 Student Login
+    </a>
+    <a href="/accounts/login/?role=organizer" class="hero-btn hero-btn-outline">
+      🎯 Organizer Login
+    </a>
+    <a href="/accounts/login/?role=admin" class="hero-btn hero-btn-outline">
+      🔑 Admin Login
+    </a>
   </div>
 </div>
 
 <div class="stats-bar">
-  <div><div class="val">{{ stats.total_events }}</div><div class="lbl">Active Events</div></div>
-  <div><div class="val">{{ stats.total_students }}</div><div class="lbl">Students</div></div>
-  <div><div class="val">{{ stats.total_organizers }}</div><div class="lbl">Organizers</div></div>
+  <div>
+    <div class="val">{{ stats.total_events }}</div>
+    <div class="lbl">Active Events</div>
+  </div>
+  <div>
+    <div class="val">{{ stats.total_students }}</div>
+    <div class="lbl">Students</div>
+  </div>
+  <div>
+    <div class="val">{{ stats.total_organizers }}</div>
+    <div class="lbl">Organizers</div>
+  </div>
 </div>
 
 {% if featured_events %}
@@ -47,21 +68,31 @@
     {% for event in featured_events %}
     {% with colors="technical:#534AB7,cultural:#D4537E,sports:#BA7517,workshop:#1D9E75,seminar:#378ADD,other:#888780" %}
     <div class="event-card">
-      <div class="event-card-top" style="background:
-        {% if event.category == 'technical' %}var(--purple)
-        {% elif event.category == 'cultural' %}var(--pink)
-        {% elif event.category == 'sports' %}var(--amber)
-        {% elif event.category == 'workshop' %}var(--teal)
-        {% else %}var(--gray){% endif %};"></div>
+      <div class="event-card-top"
+           style="background:
+                  {% if event.category == 'technical' %}var(--purple)
+                  {% elif event.category == 'cultural' %}var(--pink)
+                  {% elif event.category == 'sports' %}var(--amber)
+                  {% elif event.category == 'workshop' %}var(--teal)
+                  {% else %}var(--gray){% endif %}">
+      </div>
+
       <div class="event-card-body">
-        <span class="badge badge-{{ event.category }}">{{ event.get_category_display }}</span>
+        <span class="badge badge-{{ event.category }}">
+          {{ event.get_category_display }}
+        </span>
         <h3>{{ event.title }}</h3>
         <p>📅 {{ event.event_date }} • 📍 {{ event.venue }}</p>
-        <p style="margin-top:4px;">{{ event.description|truncatechars:80 }}</p>
+        <p style="margin-top: 4px">{{ event.description|truncatechars:80 }}</p>
       </div>
+
       <div class="event-card-footer">
-        <span style="font-size:12px;color:var(--text-muted);">{{ event.registered_count }}/{{ event.max_capacity }} registered</span>
-        <a href="/accounts/login/?role=student" class="btn btn-primary btn-sm">Register →</a>
+        <span style="font-size: 12px; color: var(--text-muted)">
+          {{ event.registered_count }}/{{ event.max_capacity }} registered
+        </span>
+        <a href="/accounts/login/?role=student" class="btn btn-primary btn-sm">
+          Register →
+        </a>
       </div>
     </div>
     {% endwith %}
@@ -73,4 +104,5 @@
 <footer>
   <p>© 2026 Campus Events Hub | Built using Django</p>
 </footer>
+
 {% endblock %}

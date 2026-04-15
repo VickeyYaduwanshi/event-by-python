@@ -1,86 +1,155 @@
 {% extends 'base.html' %}
 {% block title %}Organizer Dashboard{% endblock %}
 {% block body %}
+
 <div class="layout">
   {% include 'includes/organizer_sidebar.html' %}
+
   <div class="main-content">
     <div class="topbar">
       <h1>Dashboard</h1>
       <a href="/organizer/create/" class="btn btn-primary">+ Create Event</a>
     </div>
+
     <div class="page-body">
-      {% if messages %}{% for msg in messages %}<div class="alert alert-{% if msg.tags == 'error' %}error{% elif msg.tags == 'warning' %}warning{% elif msg.tags == 'success' %}success{% else %}info{% endif %}">{{ msg }}</div>{% endfor %}{% endif %}
-      
-      <!-- Correction alerts -->
+      {% if messages %}
+      {% for msg in messages %}
+      <div class="alert alert-{% if msg.tags == 'error' %}error
+                             {% elif msg.tags == 'warning' %}warning
+                             {% elif msg.tags == 'success' %}success
+                             {% else %}info{% endif %}">
+        {{ msg }}
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <!-- Correction Alerts -->
       {% for event in events %}
         {% if event.status == 'correction' %}
-        <div class="alert alert-warning" style="display:flex;justify-content:space-between;align-items:center;">
-          <span>⚠️ <strong>{{ event.title }}</strong> needs correction: {{ event.admin_note }}</span>
+        <div class="alert alert-warning" style="display: flex; justify-content: space-between; align-items: center;">
+          <span>
+            ⚠️ <strong>{{ event.title }}</strong> needs correction: {{ event.admin_note }}
+          </span>
           <a href="/organizer/edit/{{ event.pk }}/" class="btn btn-warning btn-sm">Fix Now</a>
         </div>
         {% endif %}
       {% endfor %}
 
+      <!-- Statistics Cards -->
       <div class="grid-4 mb-3">
-        <div class="stat-card"><div class="label">Total Events</div><div class="value" style="color:var(--purple);">{{ total_events }}</div></div>
-        <div class="stat-card"><div class="label">Active Events</div><div class="value" style="color:var(--teal);">{{ active_events }}</div></div>
-        <div class="stat-card"><div class="label">Pending Approval</div><div class="value" style="color:var(--amber);">{{ pending_events }}</div></div>
-        <div class="stat-card"><div class="label">Total Registrations</div><div class="value" style="color:var(--pink);">{{ total_registrations }}</div></div>
+        <div class="stat-card">
+          <div class="label">Total Events</div>
+          <div class="value" style="color: var(--purple);">{{ total_events }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Active Events</div>
+          <div class="value" style="color: var(--teal);">{{ active_events }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Pending Approval</div>
+          <div class="value" style="color: var(--amber);">{{ pending_events }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Total Registrations</div>
+          <div class="value" style="color: var(--pink);">{{ total_registrations }}</div>
+        </div>
       </div>
 
+      <!-- Main Content Grid -->
       <div class="grid-2">
+        <!-- My Events Table -->
         <div class="card">
           <div class="flex-between mb-2">
-            <h3 style="font-size:15px;font-weight:500;">My Events</h3>
+            <h3 style="font-size: 15px; font-weight: 500;">My Events</h3>
             <a href="/organizer/create/" class="btn btn-primary btn-sm">+ New</a>
           </div>
           {% if recent_events %}
           <table class="table">
-            <thead><tr><th>Event</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
             <tbody>
             {% for event in recent_events %}
             <tr>
-              <td><div style="font-weight:500;font-size:13px;">{{ event.title }}</div><div class="text-sm text-muted">{{ event.get_category_display }}</div></td>
-              <td class="text-sm text-muted">{{ event.event_date }}</td>
-              <td><span class="badge badge-{{ event.status }}">{{ event.get_status_display }}</span></td>
               <td>
-                {% if event.status == 'active' %}<a href="/organizer/event/{{ event.pk }}/" class="btn btn-outline btn-sm">Manage</a>
-                {% elif event.status == 'correction' %}<a href="/organizer/edit/{{ event.pk }}/" class="btn btn-warning btn-sm">Fix</a>
-                {% elif event.status == 'pending' %}<span class="text-sm text-muted">Awaiting approval</span>
-                {% else %}<a href="/organizer/event/{{ event.pk }}/" class="btn btn-outline btn-sm">View</a>{% endif %}
+                <div style="font-weight: 500; font-size: 13px;">{{ event.title }}</div>
+                <div class="text-sm text-muted">{{ event.get_category_display }}</div>
+              </td>
+              <td class="text-sm text-muted">{{ event.event_date }}</td>
+              <td>
+                <span class="badge badge-{{ event.status }}">{{ event.get_status_display }}</span>
+              </td>
+              <td>
+                {% if event.status == 'active' %}
+                <a href="/organizer/event/{{ event.pk }}/" class="btn btn-outline btn-sm">Manage</a>
+                {% elif event.status == 'correction' %}
+                <a href="/organizer/edit/{{ event.pk }}/" class="btn btn-warning btn-sm">Fix</a>
+                {% elif event.status == 'pending' %}
+                <span class="text-sm text-muted">Awaiting approval</span>
+                {% else %}
+                <a href="/organizer/event/{{ event.pk }}/" class="btn btn-outline btn-sm">View</a>
+                {% endif %}
               </td>
             </tr>
             {% endfor %}
             </tbody>
           </table>
           {% else %}
-          <p class="text-muted text-sm text-center" style="padding:2rem;">No events yet. <a href="/organizer/create/">Create your first event →</a></p>
+          <p class="text-muted text-sm text-center" style="padding: 2rem;">
+            No events yet. <a href="/organizer/create/">Create your first event →</a>
+          </p>
           {% endif %}
         </div>
 
+        <!-- Stats Column -->
         <div>
+          <!-- Category Stats -->
           <div class="card mb-2">
-            <h3 style="font-size:15px;font-weight:500;margin-bottom:1rem;">Registrations by Category</h3>
+            <h3 style="font-size: 15px; font-weight: 500; margin-bottom: 1rem;">
+              Registrations by Category
+            </h3>
             {% if category_stats %}
               {% for cat, count in category_stats.items %}
-              <div style="margin-bottom:10px;">
-                <div class="flex-between text-sm mb-1"><span>{{ cat|title }}</span><span style="font-weight:500;">{{ count }}</span></div>
-                <div class="progress-bar"><div class="progress-fill" style="width:{% widthratio count 500 100 %}%;background:{% if cat == 'technical' %}var(--purple){% elif cat == 'cultural' %}var(--pink){% elif cat == 'sports' %}var(--amber){% else %}var(--teal){% endif %};"></div></div>
+              <div style="margin-bottom: 10px;">
+                <div class="flex-between text-sm mb-1">
+                  <span>{{ cat|title }}</span>
+                  <span style="font-weight: 500;">{{ count }}</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: {% widthratio count 500 100 %}%;
+                                                     background: {% if cat == 'technical' %}var(--purple)
+                                                                {% elif cat == 'cultural' %}var(--pink)
+                                                                {% elif cat == 'sports' %}var(--amber)
+                                                                {% else %}var(--teal){% endif %};">
+                  </div>
+                </div>
               </div>
               {% endfor %}
             {% else %}
             <p class="text-sm text-muted">No active events yet.</p>
             {% endif %}
           </div>
+
+          <!-- Recent Announcements -->
           <div class="card">
             <div class="flex-between mb-2">
-              <h3 style="font-size:15px;font-weight:500;">Recent Announcements</h3>
+              <h3 style="font-size: 15px; font-weight: 500;">Recent Announcements</h3>
               <a href="/organizer/announce/" class="btn btn-outline btn-sm">Send New</a>
             </div>
             {% if announcements %}
               {% for ann in announcements %}
-              <div style="padding:8px 0;border-bottom:0.5px solid var(--border);">
-                <div class="flex-between"><span style="font-size:13px;font-weight:500;">{{ ann.subject }}</span><span class="badge badge-{% if ann.priority == 'urgent' %}rejected{% else %}active{% endif %}" style="font-size:10px;">{{ ann.priority|title }}</span></div>
+              <div style="padding: 8px 0; border-bottom: 0.5px solid var(--border);">
+                <div class="flex-between">
+                  <span style="font-size: 13px; font-weight: 500;">{{ ann.subject }}</span>
+                  <span class="badge badge-{% if ann.priority == 'urgent' %}rejected{% else %}active{% endif %}" style="font-size: 10px;">
+                    {{ ann.priority|title }}
+                  </span>
+                </div>
                 <div class="text-sm text-muted">{{ ann.created_at|date:"M d, g:i A" }}</div>
               </div>
               {% endfor %}
@@ -93,4 +162,5 @@
     </div>
   </div>
 </div>
+
 {% endblock %}
