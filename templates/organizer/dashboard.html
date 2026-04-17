@@ -122,11 +122,12 @@
                   <span style="font-weight: 500;">{{ count }}</span>
                 </div>
                 <div class="progress-bar">
-                  <div class="progress-fill" style="width: {% widthratio count 500 100 %}%;
-                                                     background: {% if cat == 'technical' %}var(--purple)
-                                                                {% elif cat == 'cultural' %}var(--pink)
-                                                                {% elif cat == 'sports' %}var(--amber)
-                                                                {% else %}var(--teal){% endif %};">
+                  <div class="progress-fill" style="width:
+                   {% widthratio count 500 100 %}%; background: 
+                    {% if cat == 'technical' %}var(--purple)
+                    {% elif cat == 'cultural' %}var(--pink)
+                    {% elif cat == 'sports' %}var(--amber)
+                    {% else %}var(--teal){% endif %};">
                   </div>
                 </div>
               </div>

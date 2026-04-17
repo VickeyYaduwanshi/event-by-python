@@ -8,8 +8,10 @@ class Registration(models.Model):
         ('cancelled', 'Cancelled'),
         ('waitlist', 'Waitlist'),
     ]
-    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='registrations')
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')
+    student = models.ForeignKey(User, on_delete=models.CASCADE,   
+                                      related_name='registrations')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, 
+                                     related_name='registrations')
     team_name = models.CharField(max_length=100, blank=True)
     team_members = models.TextField(blank=True, help_text='Comma separated roll numbers')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='confirmed')
